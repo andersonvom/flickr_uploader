@@ -16,3 +16,14 @@ module Conf
   AUTH_FILE = File.join(CONFIG_DIR, 'flickr_auth.yaml')
   LOG_FILE = File.join(LOG_DIR, 'flickr-uploadr.log')
 end
+
+
+Dir.glob(File.join(Conf::CONFIG_DIR, '*.rb')).each do |lib|
+  $log.debug "Loading #{lib}"
+  require lib
+end
+
+Dir.glob(File.join(Conf::LIB_DIR, '*.rb')).each do |lib|
+  $log.debug "Loading #{lib}"
+  require lib
+end
