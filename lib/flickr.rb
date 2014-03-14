@@ -33,8 +33,18 @@ class Flickr
       self.secret = auth_info[:secret]
       flickr.access_token = token
       flickr.access_secret = secret
+      check_token_validity
     else
       $log.debug "Unable to read cached auth info. Re-authenticating."
+      authenticate
+    end
+  end
+
+  def check_token_validity
+    begin
+      true if flickr.test.login
+    rescue
+      $log.debug "Stale token. Re-authenticating."
       authenticate
     end
   end
