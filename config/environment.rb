@@ -1,9 +1,5 @@
 require 'logger'
 
-$log = Logger.new(Conf::LOG_FILE)
-$log.level = Logger::INFO
-
-
 module Conf
   API_KEY="------------api_key-------------"
   SHARED_SECRET="-----secret-----"
@@ -17,6 +13,8 @@ module Conf
   LOG_FILE = File.join(LOG_DIR, 'flickr-uploadr.log')
 end
 
+$log = Logger.new(Conf::LOG_FILE)
+$log.level = Logger::INFO
 
 Dir.glob(File.join(Conf::CONFIG_DIR, '*.rb')).each do |lib|
   $log.debug "Loading #{lib}"
