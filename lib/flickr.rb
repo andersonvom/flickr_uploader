@@ -3,7 +3,7 @@ require 'flickraw'
 
 
 class Flickr
-  attr_accessor :flickr, :token, :secret
+  attr_accessor :flickr, :token, :secret, :sets
 
   def initialize
     config_app
@@ -13,6 +13,7 @@ class Flickr
     else
       authenticate
     end
+    self.sets = Hash[get_sets_info]
     $log.debug "Flickr account set up"
   end
 
@@ -76,6 +77,13 @@ class Flickr
     File.open(Conf::AUTH_FILE, 'w') do |file|
       file.write(auth_info.to_yaml)
     end
+  end
+
+  def get_sets_info
+    $log.debug "Retrieving sets information."
+    set_list = flickr.photosets.getList
+    $log.debug "#{set_list.size} sets retrieved."
+    set_list.map { |set| [set.title, set.id] }
   end
 
   def upload(file, set_name)
