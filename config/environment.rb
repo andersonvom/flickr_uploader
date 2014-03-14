@@ -1,6 +1,6 @@
 require 'logger'
 
-$log = Logger.new(STDOUT)
+$log = Logger.new(Conf::LOG_FILE)
 $log.level = Logger::INFO
 
 
