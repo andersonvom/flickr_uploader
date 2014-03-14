@@ -12,7 +12,7 @@ module Files
   def Files.set_walk(*paths)
     paths.each do |path|
       root_dir = File.absolute_path(path)
-      $log.debug "Walking #{root_dir}"
+      $log.info "Walking #{root_dir}"
 
       matcher = File.join(root_dir, '', '**', '*')
       files = Dir.glob(matcher)
