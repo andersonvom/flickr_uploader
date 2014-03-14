@@ -1,7 +1,7 @@
 require 'logger'
 
 $log = Logger.new(STDOUT)
-$log.level = Logger::DEBUG
+$log.level = Logger::INFO
 
 
 module Conf
