@@ -86,7 +86,26 @@ class Flickr
     set_list.map { |set| [set.title, set.id] }
   end
 
+  def add_to_set(photo_id, set_name)
+    set_id = sets[set_name]
+    if set_id
+      $log.debug "Adding '#{photo_id}' to set '#{set_name}'"
+      flickr.photosets.addPhoto photoset_id: set_id, photo_id: photo_id
+    else
+      $log.debug "Set '#{set_name}' not found. Creating it with '#{photo_id}'."
+      set = flickr.photosets.create title: set_name, primary_photo_id: photo_id
+      self.sets[set_name] = set['id']
+    end
+  end
+
   def upload(file, set_name)
-    $log.debug "Uploading #{file} to set #{set_name}"
+    begin
+      $log.info "Uploading '#{set_name}/ #{file}'"
+      photo_id = flickr.upload_photo file, is_public: 0
+      add_to_set photo_id, set_name
+    rescue
+      $log.error "Unable to upload '#{set_name}/ #{file}'"
+      $log.error "Reason: #{$!}"
+    end
   end
 end
