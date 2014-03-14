@@ -8,7 +8,11 @@ class Flickr
   def initialize
     config_app
 
-    authenticate
+    if File.exists? Conf::AUTH_FILE
+      load_authentication
+    else
+      authenticate
+    end
     $log.debug "Flickr account set up"
   end
 
@@ -19,6 +23,20 @@ class Flickr
     FlickRaw.api_key = Conf::API_KEY
     FlickRaw.shared_secret = Conf::SHARED_SECRET
     self.flickr = FlickRaw::Flickr.new
+  end
+
+  def load_authentication
+    $log.debug "Loading cached authentication"
+    auth_info = YAML::load(File.open(Conf::AUTH_FILE))
+    if auth_info
+      self.token = auth_info[:token]
+      self.secret = auth_info[:secret]
+      flickr.access_token = token
+      flickr.access_secret = secret
+    else
+      $log.debug "Unable to read cached auth info. Re-authenticating."
+      authenticate
+    end
   end
 
   def authenticate
