@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 current_dir = File.dirname(__FILE__)
 env_file = File.join(current_dir, '..', 'config', 'environment.rb')
 require File.absolute_path(env_file)
