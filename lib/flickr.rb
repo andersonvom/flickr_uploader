@@ -27,6 +27,7 @@ class Flickr
     request_token = info['oauth_token']
     request_secret = info['oauth_token_secret']
     verify_auth request_token, request_secret
+    save_auth_info
   end
 
   def verify_auth(request_token, request_secret, perms = 'write')
@@ -40,6 +41,13 @@ class Flickr
     flickr.get_access_token(request_token, request_secret, verification_code)
     self.token = flickr.access_token
     self.secret = flickr.access_secret
+  end
+
+  def save_auth_info
+    auth_info = {token: self.token, secret: self.secret}
+    File.open(Conf::AUTH_FILE, 'w') do |file|
+      file.write(auth_info.to_yaml)
+    end
   end
 
   def upload(file, set_name)
