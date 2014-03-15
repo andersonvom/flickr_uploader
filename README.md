@@ -1,4 +1,4 @@
-flickr-uploader
+flickr_uploader
 ===============
 
 This is a tool that allows you to easily upload huge amounts of pictures
@@ -14,7 +14,7 @@ also contains subfolders `subfolder1` and `subfolder1/subsubfolder1`,
 they can be uploaded to flickr with:
 
 
-    flickr-uploader /path/to/your/pictures
+    flickr_uploader /path/to/your/pictures
     # set_name / photo_name
     # pictures/photo1.jpg
     # pictures/photo2.jpg
@@ -37,4 +37,4 @@ Several paths, as well as wildcards, can be passed at once, allowing
 multiple folders to be uploaded:
 
 
-    flickr-uploader /path/pics1 /path/pics2 /path/pics3/2014-*
+    flickr_uploader /path/pics1 /path/pics2 /path/pics3/2014-*

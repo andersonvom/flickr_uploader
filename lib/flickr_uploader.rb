@@ -2,7 +2,7 @@ require 'yaml'
 require 'flickraw'
 
 
-class Flickr
+class FlickrUploader
   attr_accessor :flickr, :token, :secret, :sets
 
   def initialize
