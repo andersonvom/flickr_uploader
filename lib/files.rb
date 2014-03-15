@@ -9,13 +9,21 @@ module Files
     set_name
   end
 
-  def Files.set_walk(*paths)
+  def Files.get_file_list(root_dir, extensions)
+    matcher = File.join(root_dir, '', '**', '*')
+    files = []
+    extensions.each do |ext|
+      files += Dir.glob(matcher + ".#{ext}")
+    end
+    files.sort
+  end
+
+  def Files.set_walk(*paths, extensions)
     paths.each do |path|
       root_dir = File.absolute_path(path)
       $log.info "Walking #{root_dir}"
 
-      matcher = File.join(root_dir, '', '**', '*')
-      files = Dir.glob(matcher)
+      files = Files.get_file_list root_dir, extensions
       files.each do |file|
         next if File.directory? file
 
