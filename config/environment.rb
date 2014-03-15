@@ -10,7 +10,7 @@ module Conf
   LOG_DIR = File.join(ROOT_DIR, 'log')
 
   AUTH_FILE = File.join(CONFIG_DIR, 'flickr_auth.yaml')
-  LOG_FILE = File.join(LOG_DIR, 'flickr-uploadr.log')
+  LOG_FILE = File.join(LOG_DIR, 'flickr-uploader.log')
 end
 
 $log = Logger.new(Conf::LOG_FILE)
