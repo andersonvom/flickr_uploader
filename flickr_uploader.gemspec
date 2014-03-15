@@ -7,6 +7,7 @@ Gem::Specification.new do |gem|
   gem.authors     = ['Anderson Mesquita']
   gem.email       = andersonvom@gmail.com
   gem.files       = ['lib/files.rb', 'lib/flickr_uploader.rb']
+  gem.executables << 'flickr_uploader'
   gem.homepage    = 'http://rubygems.com/gems/flickr_uploader'
   gem.license     = 'MIT'
 end
