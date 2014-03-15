@@ -1,5 +1,6 @@
 require 'yaml'
 require 'flickraw'
+require 'flickr_uploader/files'
 
 
 class FlickrUploader
