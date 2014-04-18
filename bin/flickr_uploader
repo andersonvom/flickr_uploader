@@ -5,6 +5,4 @@ require 'flickr_uploader'
 paths = ARGV
 extensions = ['jpg', 'JPG', 'png', 'PNG']
 flickr_account = FlickrUploader::Uploader.new
-FlickrUploader::Files.set_walk(*paths, extensions) do |file, set_name|
-  flickr_account.upload(file, set_name)
-end
+flickr_account.upload_dirs(*paths, extensions)

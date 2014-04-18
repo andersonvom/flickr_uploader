@@ -108,5 +108,11 @@ module FlickrUploader
         LOG.error "Reason: #{$!}"
       end
     end
+
+    def upload_dirs(dirs, extensions)
+      FlickrUploader::Files.set_walk(*dirs, extensions) do |file, set_name|
+        upload(file, set_name)
+      end
+    end
   end
 end
