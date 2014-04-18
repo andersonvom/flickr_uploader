@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
-
-require 'flickr_uploader'
+require File.dirname(__FILE__) + '/../lib/flickr_uploader'
 
 paths = ARGV
 extensions = ['jpg', 'JPG', 'png', 'PNG']
