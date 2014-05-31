@@ -27,9 +27,9 @@ module FlickrUploader
         flickr_api = YAML.load Config::API_FILE
       else
         print "Enter your API key: "
-        api_key = gets.chomp
+        api_key = STDIN.gets.chomp
         print "Enter your API shared secret: "
-        secret = gets.chomp
+        secret = STDIN.gets.chomp
         flickr_api = { api_key: api_key, shared_secret: secret }
         File.open Config::API_FILE do |file|
           file.write flickr_api.to_yaml

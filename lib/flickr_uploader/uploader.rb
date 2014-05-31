@@ -66,7 +66,7 @@ module FlickrUploader
       puts "When you're done, paste the verification code below."
       print "Verification code: "
 
-      verification_code = gets.strip
+      verification_code = STDIN.gets.strip
       flickr.get_access_token(request_token, request_secret, verification_code)
       self.token = flickr.access_token
       self.secret = flickr.access_secret
