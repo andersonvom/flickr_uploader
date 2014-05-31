@@ -1,5 +1,8 @@
 $: << File.dirname(__FILE__)
 
+require 'rubygems'
+require 'bundler/setup'
+
 require 'flickr_uploader/log'
 require 'flickr_uploader/config'
 require 'flickr_uploader/files'
