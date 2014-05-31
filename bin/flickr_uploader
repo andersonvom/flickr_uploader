@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 require File.dirname(__FILE__) + '/../lib/flickr_uploader'
 
+client = FlickrUploader::Client.new
+uploader = FlickrUploader::Uploader.new(client)
+
 paths = ARGV
 extensions = ['jpg', 'JPG', 'png', 'PNG']
-flickr_account = FlickrUploader::Uploader.new
-flickr_account.upload_dirs(*paths, extensions)
+uploader.upload_dirs(*paths, extensions)
