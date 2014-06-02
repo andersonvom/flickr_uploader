@@ -1,11 +1,11 @@
-require 'yaml'
 require 'flickraw'
 
 module FlickrUploader
   class Client
-    attr_accessor :flickr, :token, :secret
+    attr_accessor :flickr
 
     def initialize
+      @auth_file = ConfigFile.new(Conf::AUTH_FILE)
       config_api
       authenticate
       LOG.debug "Flickr account set up"
@@ -21,28 +21,22 @@ module FlickrUploader
 
     def authenticate
       create_auth_file unless valid_auth_file?
-      load_authentication
+      flickr.access_token = @auth_file[:token]
+      flickr.access_secret = @auth_file[:secret]
       authenticate unless valid_token?
     end
 
     def valid_auth_file?
-      File.exists? Conf::AUTH_FILE
+      @auth_file.has_key?(:token) and @auth_file.has_key?(:secret)
     end
 
     def create_auth_file
       LOG.debug "Authenticating"
       info = flickr.get_request_token
-      request_token = info['oauth_token']
-      request_secret = info['oauth_token_secret']
-      verify_auth request_token, request_secret
-      save_auth_info
-    end
-
-    def load_authentication
-      LOG.debug "Loading cached authentication"
-      auth_info = YAML::load(File.open(Conf::AUTH_FILE))
-      self.token = flickr.access_token = auth_info[:token]
-      self.secret = flickr.access_secret = auth_info[:secret]
+      req_token, req_secret = info['oauth_token'], info['oauth_token_secret']
+      verification_code = get_verification_code(req_token, req_secret)
+      auth_info = get_auth_info(req_token, req_secret, verification_code)
+      @auth_file.write(auth_info)
     end
 
     def valid_token?
@@ -50,29 +44,23 @@ module FlickrUploader
         true if flickr.test.login
       rescue
         LOG.debug "Stale token. Removing auth file."
-        FileUtils.remove(Conf::AUTH_FILE)
+        @auth_file.remove
         false
       end
     end
 
-    def verify_auth(request_token, request_secret, perms = 'write')
+    def get_verification_code(request_token, request_secret, perms = 'write')
       LOG.debug "Get URL for verification token"
       auth_url = flickr.get_authorize_url(request_token, :perms => perms)
       STDOUT.puts "Visit this URL to complete authentication: #{auth_url}"
       STDOUT.puts "When you're done, paste the verification code below."
       STDOUT.print "Verification code: "
-
-      verification_code = STDIN.gets.strip
-      flickr.get_access_token(request_token, request_secret, verification_code)
-      self.token = flickr.access_token
-      self.secret = flickr.access_secret
+      STDIN.gets.strip
     end
 
-    def save_auth_info
-      auth_info = {token: self.token, secret: self.secret}
-      File.open(Conf::AUTH_FILE, 'w') do |file|
-        file.write(auth_info.to_yaml)
-      end
+    def get_auth_info
+      flickr.get_access_token(request_token, request_secret, verification_code)
+      {token: flickr.access_token, secret: flickr.access_secret}
     end
   end
 end
