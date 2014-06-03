@@ -52,8 +52,7 @@ module FlickrUploader
     def get_verification_code(request_token, request_secret, perms = 'write')
       LOG.debug "Get URL for verification token"
       auth_url = flickr.get_authorize_url(request_token, :perms => perms)
-      STDOUT.puts "Visit this URL to complete authentication: #{auth_url}"
-      STDOUT.puts "When you're done, paste the verification code below."
+      STDOUT.puts "Visit this URL to get your verification code: #{auth_url}"
       STDOUT.print "Verification code: "
       STDIN.gets.strip
     end
