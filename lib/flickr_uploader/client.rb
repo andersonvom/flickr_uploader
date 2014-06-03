@@ -12,8 +12,7 @@ module FlickrUploader
     end
 
     def config_api
-      LOG.debug "Config: API_KEY: #{Conf::API_KEY}"
-      LOG.debug "Config: SHARED_SECRET: #{Conf::SHARED_SECRET}"
+      LOG.debug "API_KEY: #{Conf::API_KEY} | SECRET: #{Conf::SHARED_SECRET}"
       FlickRaw.api_key = Conf::API_KEY
       FlickRaw.shared_secret = Conf::SHARED_SECRET
       self.flickr = FlickRaw::Flickr.new
