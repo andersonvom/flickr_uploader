@@ -5,7 +5,7 @@ module FlickrUploader
     attr_accessor :flickr
 
     def initialize
-      @auth_file = ConfigFile.new(Conf::AUTH_FILE)
+      @auth_info = ConfigFile.new(Conf::AUTH_FILE)
       config_api
       authenticate
       LOG.debug "Flickr account set up"
@@ -21,13 +21,13 @@ module FlickrUploader
 
     def authenticate
       create_auth_file unless valid_auth_file?
-      flickr.access_token = @auth_file[:token]
-      flickr.access_secret = @auth_file[:secret]
+      flickr.access_token = @auth_info[:token]
+      flickr.access_secret = @auth_info[:secret]
       authenticate unless valid_token?
     end
 
     def valid_auth_file?
-      @auth_file.has_key?(:token) and @auth_file.has_key?(:secret)
+      @auth_info.has_key?(:token) and @auth_info.has_key?(:secret)
     end
 
     def create_auth_file
@@ -35,8 +35,8 @@ module FlickrUploader
       info = flickr.get_request_token
       req_token, req_secret = info['oauth_token'], info['oauth_token_secret']
       verification_code = get_verification_code(req_token, req_secret)
-      auth_info = get_auth_info(req_token, req_secret, verification_code)
-      @auth_file.write(auth_info)
+      info = get_auth_info(req_token, req_secret, verification_code)
+      @auth_info.write(info)
     end
 
     def valid_token?
@@ -44,7 +44,7 @@ module FlickrUploader
         true if flickr.test.login
       rescue
         LOG.debug "Stale token. Removing auth file."
-        @auth_file.remove
+        @auth_info.remove
         false
       end
     end
@@ -58,8 +58,8 @@ module FlickrUploader
       STDIN.gets.strip
     end
 
-    def get_auth_info
-      flickr.get_access_token(request_token, request_secret, verification_code)
+    def get_auth_info(req_token, req_secret, verification_code)
+      flickr.get_access_token(req_token, req_secret, verification_code)
       {token: flickr.access_token, secret: flickr.access_secret}
     end
   end
