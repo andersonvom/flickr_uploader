@@ -2,13 +2,10 @@ require 'yaml'
 
 module FlickrUploader
   class ConfigFile
-    def initialize(path)
+    def initialize(path, *required_keys)
       @path = path
+      @required_keys = required_keys
       read_file
-    end
-
-    def has_key?(key)
-      @contents.has_key? key
     end
 
     def [](key)
@@ -29,7 +26,15 @@ module FlickrUploader
       @contents = {}
     end
 
+    def valid?
+      @required_keys.map { |key| has_key? key }.all?
+    end
+
     private
+
+    def has_key?(key)
+      @contents.has_key? key
+    end
 
     def validate(contents)
       raise YAML::Exception unless contents.is_a? Hash
