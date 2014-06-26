@@ -6,16 +6,30 @@ module FlickrUploader
 
     def initialize
       @auth_info = ConfigFile.new(Conf::AUTH_FILE)
+      @api_info = ConfigFile.new(Conf::API_FILE)
       config_api
       authenticate
       LOG.debug "Flickr account set up"
     end
 
     def config_api
+      create_api_file unless valid_api_file?
       LOG.debug "API_KEY: #{Conf::API_KEY} | SECRET: #{Conf::SHARED_SECRET}"
       FlickRaw.api_key = Conf::API_KEY
       FlickRaw.shared_secret = Conf::SHARED_SECRET
       self.flickr = FlickRaw::Flickr.new
+    end
+
+    def valid_api_file?
+      @api_info.has_key?(:api_key) and @api_info.has_key?(:shared_secret)
+    end
+
+    def create_api_file
+      STDOUT.print "Enter your API key: "
+      api_key = STDIN.gets.chomp
+      STDOUT.print "Enter your API shared secret: "
+      secret = STDIN.gets.chomp
+      @api_info.write(api_key: api_key, shared_secret: secret)
     end
 
     def authenticate
