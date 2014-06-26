@@ -27,19 +27,16 @@ module FlickrUploader
     end
 
     def upload(file, set_name)
-      begin
-        LOG.info "Uploading '#{set_name}/ #{file}'"
-        photo_id = flickr.upload_photo file, is_public: 0
-        add_to_set photo_id, set_name
-      rescue
-        LOG.error "Unable to upload '#{set_name}/ #{file}'"
-        LOG.error "Reason: #{$!}"
-      end
+      LOG.info "Uploading '#{set_name}/ #{file}'"
+      photo_id = flickr.upload_photo file, is_public: 0
+      add_to_set photo_id, set_name
     end
 
     def upload_dirs(dirs, extensions)
       FlickrUploader::Files.set_walk(*dirs, extensions) do |file, set_name|
-        upload(file, set_name)
+        Conf::NUM_RETRIES.tries do
+          upload(file, set_name)
+        end
       end
     end
   end
