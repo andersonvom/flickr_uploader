@@ -1,10 +1,14 @@
+require 'digest'
+
+
 module FlickrUploader
   class Uploader
-    attr_accessor :flickr, :sets
+    attr_accessor :flickr, :sets, :hashfunc
 
     def initialize(client)
       self.flickr = client.flickr
       self.sets = Hash[get_sets_info]
+      self.hashfunc = Digest::SHA256.new
     end
 
     def get_sets_info
@@ -26,9 +30,17 @@ module FlickrUploader
       end
     end
 
+    def hash_photo(file, photo_id, set_name)
+      LOG.info "Hashing '#{set_name}/ #{file}'"
+      signature = hashfunc.hexdigest File.open(file).read
+      flickr.photos.addTags photo_id: photo_id, tags: "sha256:#{signature} hashed"
+      signature
+    end
+
     def upload(file, set_name)
       LOG.info "Uploading '#{set_name}/ #{file}'"
       photo_id = flickr.upload_photo file, is_public: 0
+      hash_photo file, photo_id, set_name
       add_to_set photo_id, set_name
     end
 
