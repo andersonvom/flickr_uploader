@@ -14,9 +14,9 @@ module FlickrUploader
 
     def config_api
       create_api_file unless @api_info.valid?
-      LOG.debug "API_KEY: #{Conf::API_KEY} | SECRET: #{Conf::SHARED_SECRET}"
-      FlickRaw.api_key = Conf::API_KEY
-      FlickRaw.shared_secret = Conf::SHARED_SECRET
+      LOG.debug "API_KEY: #{@api_info[:api_key]} | SECRET: #{@api_info[:shared_secret]}"
+      FlickRaw.api_key = @api_info[:api_key]
+      FlickRaw.shared_secret = @api_info[:shared_secret]
       self.flickr = FlickRaw::Flickr.new
     end
 
